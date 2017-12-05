@@ -1,6 +1,6 @@
 # Tic-tac-toe
 # Created:  2017-12-02
-# Updated:  2017-12-05 
+# Updated:  2017-12-05
 # Learning to code or something
 
 # TODO - computer player vs 'AI'
@@ -19,26 +19,37 @@ class HumanPlayer
   end
 
   def get_move(board)
-    print "Your move #{@letter}\n"
-    print "Which cell?: "
+
+    # Reusable strings
+    badNum  = "Move must be a number between 0 and 9\n"
+    taken   = "Space already taken\n"
+    which   = "Which cell?: "
 
     cell = nil
+
+    print "Your move #{@letter}\n"
+    print which
+
+    # get input, and check for input errors
     while cell.nil?
       cell = gets.chomp
       begin
         cell = Integer(cell)
       rescue ArgumentError => e
-        puts "Must be a number"
+        puts badNum
+        print which
         cell = nil
         next
       end
       if cell > 8 || cell < 0
-        puts "Cell out of range"
+        puts badNum
+        print which
         cell = nil
         next
       end
       if ! board.empty?(cell)
-        puts "Space taken"
+        puts taken
+        print which
         cell = nil
         next
       end
@@ -58,34 +69,34 @@ class Board
   EMPTY = " "
 
   def initialize
-    @cells = Array.new(9, EMPTY)
+    @cells = Array.new(9, EMPTY) # initalize array board will use
   end
 
   # build the table
   def to_s
-    "#{@cells[0]}|#{@cells[1]}|#{@cells[2]}\n" +
-    "-+-+-\n" +
-    "#{@cells[3]}|#{@cells[4]}|#{@cells[5]}\n" +
-    "-+-+-\n" +
-    "#{@cells[6]}|#{@cells[7]}|#{@cells[8]}\n"
+    "\n\t#{@cells[0]}|#{@cells[1]}|#{@cells[2]}\n" +
+    "\t-+-+-\n" +
+    "\t#{@cells[3]}|#{@cells[4]}|#{@cells[5]}\n" +
+    "\t-+-+-\n" +
+    "\t#{@cells[6]}|#{@cells[7]}|#{@cells[8]}\n\n"
   end
 
-# record move
+  # record move
   def move!(cell, letter)
     @cells[cell] = letter
   end
 
-# check if cell is empty
+  # check if cell is empty
   def empty?(cell)
     @cells[cell] == EMPTY
   end
 
-# winning scenarios
-WINNING_ROWS = [
-  [0,1,2],
-  [3,4,5],
-
-]
+  # winning scenarios
+  WINNING_ROWS = [
+    [0,1,2], [0,3,6], [0,4,8],
+    [3,4,5], [1,4,7], [2,4,6],
+    [6,7,8], [2,5,8]
+  ]
   def winner(players)
     players
       .map{|player| player.letter } #turn player into letter
@@ -107,7 +118,7 @@ WINNING_ROWS = [
       #return mark if [@cells[2], @cells[4], @cells[6]].all? {|c| c == mark}
     end
     # all cells filled, but no winner
-    return "No Winner" if @cells.all? {|c| c != EMPTY}
+    return "draw!" if @cells.all? {|c| c != EMPTY}
 
     # no winner / draw
     return nil
@@ -133,7 +144,8 @@ class Game
       puts @board #prints board
     end
 
-    puts "Game over: #{@board.winner(@players)}"
+    puts "Game over."
+    puts "Winner: #{@board.winner(@players)}"
   end
 
 end
