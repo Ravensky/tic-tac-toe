@@ -1,5 +1,6 @@
 # Tic-tac-toe
-# 2017-12-02
+# Created:  2017-12-02
+# Updated:  2017-12-05
 # Learning to code or something
 
 # TODO - computer player vs 'AI'
@@ -94,7 +95,7 @@ WINNING_ROWS = [
         return mark if actual.all? {|c| c == mark} #returns letter if all cells have letter
       }
       # above does same as below
-      
+
       # check all 8 winning scenarios
       #return mark if [@cells[0], @cells[1], @cells[2]].all? {|c| c == mark}
       #return mark if [@cells[3], @cells[4], @cells[5]].all? {|c| c == mark}
