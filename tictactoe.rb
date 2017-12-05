@@ -1,6 +1,6 @@
 # Tic-tac-toe
 # Created:  2017-12-02
-# Updated:  2017-12-05
+# Updated:  2017-12-05 
 # Learning to code or something
 
 # TODO - computer player vs 'AI'
