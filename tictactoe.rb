@@ -21,7 +21,7 @@ class HumanPlayer
   def get_move(board)
 
     # Reusable strings
-    badNum  = "Move must be a number between 0 and 9\n"
+    badNum  = "Move must be a number between 0 and 8\n"
     taken   = "Space already taken\n"
     which   = "Which cell?: "
 
@@ -60,6 +60,11 @@ class HumanPlayer
 end
 
 class AIPlayer
+
+  def letter
+    @letter
+  end
+
   def initialize(letter)
     @letter = letter
   end
@@ -118,7 +123,7 @@ class Board
       #return mark if [@cells[2], @cells[4], @cells[6]].all? {|c| c == mark}
     end
     # all cells filled, but no winner
-    return "draw!" if @cells.all? {|c| c != EMPTY}
+    return "it's a draw!" if @cells.all? {|c| c != EMPTY}
 
     # no winner / draw
     return nil
