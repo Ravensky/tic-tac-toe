@@ -80,24 +80,34 @@ class Board
   # build the table
   def to_s
 
-    s = ""
-    (0..8).each {|i|
-      if i % 3 == 0 && i != 0 # before each row except first
-        s << "\n-+-+-\n" # append horizontal divider
-      end
+    #s = ""
+    #(0..8).each {|i|
+  #    if i % 3 == 0 && i != 0 # before each row except first
+#        s << "\n-+-+-\n" # append horizontal divider
+#      end
+#
+#      if @cells[i] == EMPTY
+#        s << "#{i}"
+#      else
+#        s << @cells[i]
+#      end
+#
+#      if i % 3 != 2 # insert pipe if not last of row
+#        s << "|"
+#      end
+#    }
 
-      if @cells[i] == EMPTY
-        s << "#{i}"
-      else
-        s << @cells[i]
-      end
-
-      if i % 3 != 2 # insert pipe if not last of row
-        s << "|"
+    cells = (0..8).map{|i|
+      if @cells[i] == EMPTY # if the cell if empty, return cell index
+       "#{i}"
+     else  # otherwise return cell value, X or O
+       @cells[i]
       end
     }
+    rows = cells.each_slice(3) # [["0","X","2"], [...] . . .]
+    row_strings = rows.map{|row| row.join("|")} # ["0 | X | O", ".."]
+    return row_strings.join("\n-+-+-\n")
 
-    return s
   #  "\n\t#{@cells[0]}|#{@cells[1]}|#{@cells[2]}\n" +
 #    "\t-+-+-\n" +
 #    "\t#{@cells[3]}|#{@cells[4]}|#{@cells[5]}\n" +
