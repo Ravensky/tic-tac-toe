@@ -1,11 +1,10 @@
 # Tic-tac-toe
 # Created:  2017-12-02
-# Updated:  2017-12-05
+# Updated:  2017-12-09
 # Learning to code or something
 
-# TODO - computer player vs 'AI'
-# => AI has to RNG cell & check if not already taken
-# TODO
+# TODO: choose between human-human and human-ai
+# TODO: 'tournament' mode (e.g. BO3)
 
 class HumanPlayer
   attr_reader :letter
@@ -21,7 +20,7 @@ class HumanPlayer
   def get_move(board)
 
     # Reusable strings
-    badNum  = "Move must be a number between 0 and 8\n"
+    badNum  = "Move must be a number 1-9\n"
     taken   = "Space already taken\n"
     which   = "Which cell?: "
 
@@ -41,7 +40,7 @@ class HumanPlayer
         cell = nil
         next
       end
-      if cell > 8 || cell < 0
+      if cell > 9 || cell < 1 # check input 1-9
         puts badNum
         print which
         cell = nil
@@ -68,6 +67,17 @@ class AIPlayer
   def initialize(letter)
     @letter = letter
   end
+
+  def get_move(board)
+    loop do
+      move = rand(9) + 1
+      if ! board.empty?(move)
+        next
+      end
+      puts "AI picked cell #{move}"
+      return move
+    end
+  end
 end
 
 class Board
@@ -80,9 +90,9 @@ class Board
   # build the table
   def to_s
 
-    #s = ""
-    #(0..8).each {|i|
-  #    if i % 3 == 0 && i != 0 # before each row except first
+#    s = ""
+#    (0..8).each {|i|
+#      if i % 3 == 0 && i != 0 # before each row except first
 #        s << "\n-+-+-\n" # append horizontal divider
 #      end
 #
@@ -97,18 +107,19 @@ class Board
 #      end
 #    }
 
-    cells = (0..8).map{|i|
+# does same as above
+    (0..8).map{|i|
       if @cells[i] == EMPTY # if the cell if empty, return cell index
-       "#{i}"
+       "#{i + 1}"
      else  # otherwise return cell value, X or O
        @cells[i]
       end
-    }
-    rows = cells.each_slice(3) # [["0","X","2"], [...] . . .]
-    row_strings = rows.map{|row| row.join("|")} # ["0 | X | O", ".."]
-    return row_strings.join("\n-+-+-\n")
+    }.each_slice(3) # [["0","X","2"], [...] . . .]
+     .map{|row| row.join("|")} # ["0 | X | O", ".."]
+     .map{|row| "\t#{row}"}
+     .join("\n\t-+-+-\n")
 
-  #  "\n\t#{@cells[0]}|#{@cells[1]}|#{@cells[2]}\n" +
+#    "\n\t#{@cells[0]}|#{@cells[1]}|#{@cells[2]}\n" +
 #    "\t-+-+-\n" +
 #    "\t#{@cells[3]}|#{@cells[4]}|#{@cells[5]}\n" +
 #    "\t-+-+-\n" +
@@ -117,12 +128,12 @@ class Board
 
   # record move
   def move!(cell, letter)
-    @cells[cell] = letter
+    @cells[cell - 1] = letter
   end
 
   # check if cell is empty
   def empty?(cell)
-    @cells[cell] == EMPTY
+    @cells[cell - 1] == EMPTY
   end
 
   # winning scenarios
@@ -162,29 +173,46 @@ end
 
 class Game
 
-  def initialize
+  def initialize(player, player2)
     @board = Board.new #create board
-    @players =  [HumanPlayer.new("X"), HumanPlayer.new("O")] #create 2 players
+    @players =  [player.new("X"), player2.new("O")] #create 2 players
     @next_player = @players.cycle #alternate between the 2 players
   end
 
 
   def run
-    puts @board # print blank board
+    print_board # blank board at beginning of game
     while ! @board.winner(@players) #while no winner from @board
       player = @next_player.next #alternate players
       move = player.get_move(@board) #asks player for move
       @board.move!(move, player.letter) #records move
-
-      puts @board #prints board after each move
+      print_board # board after each move
     end
 
     puts "Game over."
     puts "Winner: #{@board.winner(@players)}"
   end
 
+  def print_board
+    puts
+    puts @board
+    puts
+  end
 end
 
-g = Game.new #create game object
+# ask to play human-human or human-ai
+# TODO: turn this into a class
+puts "Human-human or AI?"
+input = gets.chomp
+player = if input == "1"
+  HumanPlayer
+elsif input == "2"
+  AIPlayer
+else
+  puts "You're an idiot"
+  exit
+end
+
+g = Game.new(HumanPlayer, player) #create game object
 
 g.run #runs Game.run function
