@@ -79,11 +79,30 @@ class Board
 
   # build the table
   def to_s
-    "\n\t#{@cells[0]}|#{@cells[1]}|#{@cells[2]}\n" +
-    "\t-+-+-\n" +
-    "\t#{@cells[3]}|#{@cells[4]}|#{@cells[5]}\n" +
-    "\t-+-+-\n" +
-    "\t#{@cells[6]}|#{@cells[7]}|#{@cells[8]}\n\n"
+
+    s = ""
+    (0..8).each {|i|
+      if i % 3 == 0 && i != 0 # before each row except first
+        s << "\n-+-+-\n" # append horizontal divider
+      end
+
+      if @cells[i] == EMPTY
+        s << "#{i}"
+      else
+        s << @cells[i]
+      end
+
+      if i % 3 != 2 # insert pipe if not last of row
+        s << "|"
+      end
+    }
+
+    return s
+  #  "\n\t#{@cells[0]}|#{@cells[1]}|#{@cells[2]}\n" +
+#    "\t-+-+-\n" +
+#    "\t#{@cells[3]}|#{@cells[4]}|#{@cells[5]}\n" +
+#    "\t-+-+-\n" +
+#    "\t#{@cells[6]}|#{@cells[7]}|#{@cells[8]}\n\n"
   end
 
   # record move
@@ -135,18 +154,19 @@ class Game
 
   def initialize
     @board = Board.new #create board
-    @players =  [HumanPlayer.new("x"), HumanPlayer.new("o")] #create 2 players
+    @players =  [HumanPlayer.new("X"), HumanPlayer.new("O")] #create 2 players
     @next_player = @players.cycle #alternate between the 2 players
   end
 
 
   def run
+    puts @board # print blank board
     while ! @board.winner(@players) #while no winner from @board
       player = @next_player.next #alternate players
       move = player.get_move(@board) #asks player for move
       @board.move!(move, player.letter) #records move
 
-      puts @board #prints board
+      puts @board #prints board after each move
     end
 
     puts "Game over."
